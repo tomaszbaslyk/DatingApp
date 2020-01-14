@@ -189,6 +189,7 @@
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\VisitorApiController.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Migrations\202001062022484_Added_Repositories.cs" />
     <Compile Include="Migrations\202001062022484_Added_Repositories.Designer.cs">
       <DependentUpon>202001062022484_Added_Repositories.cs</DependentUpon>

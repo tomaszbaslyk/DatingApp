@@ -1,4 +1,5 @@
-﻿using DatingApp.Models;
+﻿using DatingApp.Helpers;
+using DatingApp.Models;
 using DatingApp.Repositories;
 using DatingApp.Services;
 using Microsoft.AspNet.Identity;
@@ -49,7 +50,6 @@ namespace DatingApp.Controllers
         [Authorize]
         public ActionResult IndexMe()
         {
-            //Visar den nuvarande användarens profilsida
             string userId = User.Identity.GetUserId();
             var model = UnitOfWork.ProfileRepository.GetProfile(userId);
 
@@ -62,11 +62,9 @@ namespace DatingApp.Controllers
         [HttpGet]
         public ActionResult Index(int userId)
         {
-
-            //visar profilsidan på användaren med id:t som skickas in
             var model = UnitOfWork.ProfileRepository.GetProfile(userId);
 
-            //Kollar om profilen tillhör den nuvarande användaren
+            // Checks if the visited profile is the same as the logged in user's
             if (UnitOfWork.ProfileRepository.GetProfileId(User.Identity.GetUserId()) == model.Id)
             {
                 return RedirectToAction("IndexMe");
@@ -78,12 +76,11 @@ namespace DatingApp.Controllers
                 VisitorId = UnitOfWork.ProfileRepository.GetProfileId(User.Identity.GetUserId())
             };
 
-            // Hämtar alla besökare
             var visitorModels = UnitOfWork.VisitorRepository.GetVisitorProfiles(model.Id);
 
             bool duplicate = false;
 
-            // Kollar om den inloggade användaren finns på besökarlistan
+            // Checks if the current user already exists on the visitor list
             foreach (var visitor in visitorModels)
             {
                 if (visitor.VisitorId == UnitOfWork.ProfileRepository.GetProfileId(User.Identity.GetUserId()))
@@ -92,16 +89,18 @@ namespace DatingApp.Controllers
                 }
             }
 
-            // om besökaren inte redan finns i besökarlistan och listan är mindre än 5
             if ((visitorModels.Count < 5) && (!duplicate))
             {
                 UnitOfWork.VisitorRepository.AddVisitor(visitorModel);
             }
-            // om besökaren inte redan finns i besökarlistan, men listan är full
             else if (!duplicate)
             {
-                // den äldsta besökaren tas bort och den nya läggs till
                 UnitOfWork.VisitorRepository.RemoveOldestVisitor();
+                UnitOfWork.VisitorRepository.AddVisitor(visitorModel);
+            }
+            else
+            {
+                UnitOfWork.VisitorRepository.RemoveVisitor(visitorModel.VisitorId);
                 UnitOfWork.VisitorRepository.AddVisitor(visitorModel);
             }
 
@@ -128,34 +127,6 @@ namespace DatingApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                string fileName = "";
-
-                if (file != null)
-                {
-                    // Kontrollerar filändelsen på bilden
-                    var splitFile = file.FileName.Split('.');
-                    var extension = splitFile[splitFile.Length - 1];
-
-                    bool validExtension = false;
-
-                    if (extension.Equals("png") || extension.Equals("jpg") || extension.Equals("jpeg"))
-                    {
-                        validExtension = true;
-                    }
-
-                    if (validExtension)
-                    {
-                        string path = Path.Combine(Server.MapPath("~/Images"), Path.GetFileName(file.FileName));
-                        file.SaveAs(path);
-                        fileName = "~/Images/" + file.FileName;
-                    } else
-                    {
-                        // Om filändelsen inte är tillåten
-                        ViewBag.ErrorMessage = "Image must be a .png, .jpg or .jpeg";
-                        return View(viewModel);
-                    }
-                }
-
                 string foreignKey = User.Identity.GetUserId();
 
                 var model = UnitOfWork.ProfileRepository.GetProfile(UnitOfWork.ProfileRepository.GetProfileId(foreignKey));
@@ -167,9 +138,19 @@ namespace DatingApp.Controllers
                 model.JavaScript = viewModel.JavaScript;
                 model.StackOverflow = viewModel.StackOverflow;
 
-                if (!String.IsNullOrEmpty(fileName))
+                if (file != null)
                 {
-                    model.Image = fileName;
+                    if (ImageHelper.IsValidExtension(file))
+                    {
+                        ImageHelper.Save(file);
+                        string fileName = "~/Images/" + file.FileName;
+                        model.Image = fileName;
+
+                    } else
+                    {
+                        ViewBag.ErrorMessage = "Image must be a .png, .jpg or .jpeg";
+                        return View(viewModel);
+                    }
                 }
 
                 UnitOfWork.ProfileRepository.EditProfile(model);

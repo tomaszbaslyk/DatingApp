@@ -13,6 +13,7 @@ using static DatingApp.Models.ProfileViewModels;
 using System.IO;
 using DatingApp.Repositories;
 using System.Security.Principal;
+using DatingApp.Helpers;
 
 namespace DatingApp.Controllers
 {
@@ -180,26 +181,13 @@ namespace DatingApp.Controllers
             {
                 if (file != null)
                 {
-                    // Filändelsen kontrolleras
-                    var splitFile = file.FileName.Split('.');
-                    var extension = splitFile[splitFile.Length - 1];
-
-                    bool validExtension = false;
-
-                    if (extension.Equals("png") || extension.Equals("jpg") || extension.Equals("jpeg"))
+                    if (ImageHelper.IsValidExtension(file))
                     {
-                        validExtension = true;
-                    }
-
-                    if (validExtension)
-                    {
-                        string path = Path.Combine(Server.MapPath("~/Images"), Path.GetFileName(file.FileName));
-                        file.SaveAs(path);
+                        ImageHelper.Save(file);
                         pModel.Image = "~/Images/" + file.FileName;
                     }
                     else
                     {
-                        // Ändelsen är inte tillåten
                         ViewBag.ErrorMessage = "Image must be a .png, .jpg or .jpeg";
                         return View();
                     }
@@ -207,7 +195,7 @@ namespace DatingApp.Controllers
                 }
                 else
                 {
-                    // Om användare inte har valt en bild, sätts default-bilden
+                    // If the user hasn't selected a profile picture, a default one is set
                     pModel.Image = "~/Images/default-profile-picture.jpg";
                 }
 

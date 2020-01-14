@@ -59,7 +59,7 @@ namespace DatingApp.Repositories
 
         public List<ProfileModel> GetThreeNewestUsers() {
 
-            return Ctx.Profiles.OrderByDescending((x) => x.Id).Take(3).ToList();
+            return Ctx.Profiles.Where((x) => x.Active == true).OrderByDescending((x) => x.Id).Take(3).ToList();
         
         }
 
