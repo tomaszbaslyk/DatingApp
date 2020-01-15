@@ -18,7 +18,7 @@
                 <table class="table table-responsive">
                     <tr>
                         <td>@Html.LabelFor(m => m.Age, htmlAttributes: new { @class = "control-label col-md-2" })</td>
-                        <td><p>@Html.DisplayFor((m) => m.Age, new { @class = "control-label col-md-6" })</p></td>
+                        <td class="col-md-8"><p>@Html.DisplayFor((m) => m.Age, new { @class = "control-label col-md-6" })</p></td>
                     </tr>
                     <tr>
                         <td>@Html.LabelFor(m => m.Gender, htmlAttributes: new { @class = "control-label col-md-2" })</td>
@@ -26,27 +26,27 @@
                     </tr>
                     <tr>
                         <td>@Html.LabelFor(m => m.Biography, htmlAttributes: new { @class = "control-label col-md-2" })</td>
-                        <td><em>@Html.DisplayFor((m) => m.Biography, new { @class = "control-label col-md-6" })</em></td>
+                        <td id="bio"><em>@Html.DisplayFor((m) => m.Biography, new { @class = "control-label col-md-6"})</em></td>
                     </tr>
                     <tr>
-                        <td class="col-md-2">@Html.LabelFor(m => m.CSharp, htmlAttributes: new { @class = "control-label col-md-2" })</td>
-                        <td class="col-md-10">
+                        <td>@Html.LabelFor(m => m.CSharp, htmlAttributes: new { @class = "control-label col-md-2" })</td>
+                        <td>
                             <div class="progress" id="csharp-progress">
                                 <div class="progress-bar" id="progress-bar-csharp" aria-valuemin="0" aria-valuemax="100" data-value="@Model.CSharp"></div>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="col-md-2">@Html.LabelFor(m => m.JavaScript, htmlAttributes: new { @class = "control-label col-md-2" })</td>
-                        <td class="col-md-10">
+                        <td>@Html.LabelFor(m => m.JavaScript, htmlAttributes: new { @class = "control-label col-md-2" })</td>
+                        <td>
                             <div class="progress" id="javascript-progress">
                                 <div class="progress-bar" id="progress-bar-javascript" aria-valuemin="0" aria-valuemax="100" data-value="@Model.JavaScript"></div>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <td class="col-md-2">@Html.LabelFor(m => m.StackOverflow, htmlAttributes: new { @class = "control-label col-md-2" })</td>
-                        <td class="col-md-10">
+                        <td>@Html.LabelFor(m => m.StackOverflow, htmlAttributes: new { @class = "control-label col-md-2" })</td>
+                        <td>
                             <div class="progress" id="stackoverflow-progress">
                                 <div class="progress-bar" id="progress-bar-stackoverflow" aria-valuemin="0" aria-valuenow="0" aria-valuemax="100" data-value="@Model.StackOverflow"></div>
                             </div>

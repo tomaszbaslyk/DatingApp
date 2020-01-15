@@ -47,20 +47,20 @@ namespace DatingApp.Repositories
 
         public List<ProfileModel> FindProfiles(List<int> contactIds)
         {
-            var profiles = new List<ProfileModel>();
-
-            foreach (int contactId in contactIds)
-            {
-                profiles.Add(Ctx.Profiles.Where((p) => p.Id == contactId).First());
-            }
-
-            return profiles;
+            return Ctx.Profiles.Where((p) => contactIds.Contains(p.Id)).ToList();
         }
 
         public List<ProfileModel> GetThreeNewestUsers() {
 
             return Ctx.Profiles.Where((x) => x.Active == true).OrderByDescending((x) => x.Id).Take(3).ToList();
         
+        }
+
+        public List<ProfileModel> GetThreeNewestUsers(int currentId)
+        {
+
+            return Ctx.Profiles.Where((x) => x.Active == true && x.Id != currentId).OrderByDescending((x) => x.Id).Take(3).ToList();
+
         }
 
         public int CountProfiles()

@@ -27,10 +27,22 @@ namespace DatingApp.Controllers
                 // Kontrollerar om det finns tillräckligt med profiler för att göra profilkorten på startsidan
                 if (profilesCount > 3)
                 {
-                    foreach (var item in UnitOfWork.ProfileRepository.GetThreeNewestUsers())
+                    if (User.Identity.IsAuthenticated)
                     {
-                        var viewModel = new ProfileIndexViewModel(item);
-                        viewModels.Profiles.Add(viewModel);
+                        int profileId = UnitOfWork.ProfileRepository.GetProfileId(User.Identity.GetUserId());
+
+                        foreach (var item in UnitOfWork.ProfileRepository.GetThreeNewestUsers(profileId))
+                        {
+                            var viewModel = new ProfileIndexViewModel(item);
+                            viewModels.Profiles.Add(viewModel);
+                        }
+                    } else
+                    {
+                        foreach (var item in UnitOfWork.ProfileRepository.GetThreeNewestUsers())
+                        {
+                            var viewModel = new ProfileIndexViewModel(item);
+                            viewModels.Profiles.Add(viewModel);
+                        }
                     }
 
                     UnitOfWork.Dispose();

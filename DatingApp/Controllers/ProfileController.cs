@@ -93,7 +93,7 @@ namespace DatingApp.Controllers
             {
                 UnitOfWork.VisitorRepository.AddVisitor(visitorModel);
             }
-            else if (!duplicate)
+            else if ((!duplicate) && (visitorModels.Count == 5))
             {
                 UnitOfWork.VisitorRepository.RemoveOldestVisitor();
                 UnitOfWork.VisitorRepository.AddVisitor(visitorModel);

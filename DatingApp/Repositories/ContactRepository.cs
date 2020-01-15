@@ -75,10 +75,7 @@ namespace DatingApp.Repositories
             Dictionary<ProfileModel, Category> dictionary2 = Ctx.Contacts.Where(p => (p.ProfileId == profileId) && (p.Accepted == true)).
                     Select((x) => new { x.Contact, x.ContactCategory }).ToDictionary(t => t.Contact, t => t.ContactCategory);
 
-            // Lägger ihop båda dictionaries till en
-            var merged = dictionary1.Concat(dictionary2).ToLookup(x => x.Key, x => x.Value).ToDictionary(x => x.Key, g => g.First());
-
-            return merged;
+            return dictionary1.Concat(dictionary2).ToLookup(x => x.Key, x => x.Value).ToDictionary(x => x.Key, g => g.First());
         }
 
         public void AcceptContact(int userProfileId, int contactId)

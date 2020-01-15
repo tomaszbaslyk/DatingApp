@@ -52,6 +52,11 @@
     font-weight: normal !important;
 }
 
+#bio {
+    word-wrap: hyphenate;
+    word-break: break-all;
+}
+
 @media (min-width: 99px) {
     .equal {
         display: -ms-flexbox;
